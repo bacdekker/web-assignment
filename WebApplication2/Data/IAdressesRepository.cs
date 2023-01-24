@@ -6,7 +6,7 @@ namespace WebApplication2.Data
 {
     public interface IAddressRepository
     {
-        List<(int, Address)> getAddresses(Address address, bool orderByAscending);
+        (List<Address>, List<int>) getAddresses(Address address, bool orderByAscending);
 
         Address getSingleAddress(int id);
         void InsertAddress(Address address);

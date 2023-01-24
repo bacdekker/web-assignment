@@ -15,9 +15,10 @@ namespace WebApplication2.Data
             _db_connection = db_connection;
             _db_connection.Open();
         }
-        public List<(int, Address)> readerToAddresses(SqliteDataReader reader)
+        public (List<Address>, List<int>) readerToAddresses(SqliteDataReader reader)
         {
-            List<(int, Address)> addresses = new List<(int, Address)>();
+            List<Address> addresses = new List<Address>();
+            List<int> ids = new List<int>();
             while (reader.Read())
             {
                 int ID = reader.GetInt32("ID");
@@ -25,36 +26,36 @@ namespace WebApplication2.Data
                 string city   =  reader[2].ToString();
                 string zipcode = reader[3].ToString();
                 int houseNumber = (int)(long)reader[4];
-                addresses.Add((ID, new Address(street, city, zipcode, houseNumber)));
+                addresses.Add(new Address(street, city, zipcode, houseNumber));
+                ids.Add(ID);
 
             }
-            return addresses;
+            return (addresses, ids);
         }
 
         public string getSearchAddressesString(string start, Address search_info)
         {
             string search_command_string = start;
+
             // In case the search command is not null loop through all non null properties and add them to the search
             if (search_info != null)
             {
                 foreach (var prop in search_info.GetType().GetProperties())
                 {
-                    if (prop.GetValue(search_info) != null)
+                    if (prop.PropertyType.Name == "String")
                     {
-                        if (prop.PropertyType.Name == "String")
-                        {
-                            search_command_string += prop.Name.ToString() + " = '" + prop.GetValue(search_info).ToString() + "'" + ", ";
-                        }
-                        else if (prop.PropertyType.Name == "Int32")
-                        {
-                            search_command_string += prop.Name.ToString() + " = " + ((int)prop.GetValue(search_info)).ToString() + ", ";
-                        }
+                        search_command_string += prop.Name.ToString() + " = '" + prop.GetValue(search_info).ToString() + "'" + " AND ";
+                    }
+                    else if (prop.PropertyType.Name == "Int32")
+                    {
+                        search_command_string += prop.Name.ToString() + " = " + ((int)prop.GetValue(search_info)).ToString() + " AND ";
                     }
                 }
+                search_command_string = search_command_string.Substring(0, search_command_string.Length - 5);
             }
             return search_command_string;
         }
-        public List<(int, Address)> getAddresses(Address search_info, bool orderByAscending)
+        public (List<Address>, List<int>) getAddresses(Address search_info, bool orderByAscending)
         {
             // Initialize search_command in case there is no info in the address to search on
             string search_command_string = $"SELECT * FROM ADDRESSES WHERE ";
@@ -155,7 +156,7 @@ namespace WebApplication2.Data
             SqliteCommand single_address_command = new SqliteCommand(get_address_string, _db_connection);
             SqliteDataReader reader = single_address_command.ExecuteReader();
             var collection = readerToAddresses(reader);
-            return collection[0].Item2;
+            return collection.Item1[0];
         }
     }
 }

@@ -17,15 +17,15 @@ namespace WebApplication2.Controllers
         }
 
         [HttpGet("/addresses")]
-        [ProducesResponseType(200, Type = typeof(List<(int, Address)>))]
-        public IActionResult getAddresses(Address address, bool orderByAscending)
+        [ProducesResponseType(200, Type = typeof(List<Address>))]
+        public IActionResult getAddresses([FromQuery] Address address, bool orderByAscending)
         {
-            List<(int, Address)> addresses = _addressReposity.getAddresses(address, orderByAscending);
+            (List<Address>, List<int>) addresses = _addressReposity.getAddresses(address, orderByAscending);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(addresses);
+            return Ok(addresses.Item1);
         }
 
         [HttpPost("/addresses")]
@@ -33,8 +33,6 @@ namespace WebApplication2.Controllers
         { 
             if (!ModelState.IsValid)
                     return BadRequest(ModelState);
-
-            // Validation
 
             _addressReposity.InsertAddress(address);
 
