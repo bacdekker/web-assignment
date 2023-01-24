@@ -36,22 +36,29 @@ namespace WebApplication2.Data
         public string getSearchAddressesString(string start, Address search_info)
         {
             string search_command_string = start;
-
+            bool non_empty_search_command = false;
             // In case the search command is not null loop through all non null properties and add them to the search
             if (search_info != null)
             {
                 foreach (var prop in search_info.GetType().GetProperties())
                 {
-                    if (prop.PropertyType.Name == "String")
+                    if (prop.GetValue(search_info) != null)
                     {
-                        search_command_string += prop.Name.ToString() + " = '" + prop.GetValue(search_info).ToString() + "'" + " AND ";
-                    }
-                    else if (prop.PropertyType.Name == "Int32")
-                    {
-                        search_command_string += prop.Name.ToString() + " = " + ((int)prop.GetValue(search_info)).ToString() + " AND ";
+                        non_empty_search_command = true;
+                        if (prop.PropertyType.Name == "String")
+                        {
+                            search_command_string += prop.Name.ToString() + " = '" + prop.GetValue(search_info).ToString() + "'" + " AND ";
+                        }
+                        else if (prop.PropertyType.Name == "Int32")
+                        {
+                            search_command_string += prop.Name.ToString() + " = " + ((int)prop.GetValue(search_info)).ToString() + " AND ";
+                        }
                     }
                 }
-                search_command_string = search_command_string.Substring(0, search_command_string.Length - 5);
+                if(non_empty_search_command)
+                    search_command_string = search_command_string.Substring(0, search_command_string.Length - 5);
+                else
+                    search_command_string = search_command_string.Substring(0, search_command_string.Length - 6);
             }
             return search_command_string;
         }
@@ -88,7 +95,7 @@ namespace WebApplication2.Data
                         {
                             insert_command_string_part_two += "'" + prop.GetValue(address).ToString() + "'" + ", "; 
                         }
-                        else if (prop.PropertyType.Name == "Int32")
+                        else if (prop.PropertyType.Name == "Nullable`1")
                         {
                             insert_command_string_part_two += ((int)prop.GetValue(address)).ToString() + ", ";
                         }

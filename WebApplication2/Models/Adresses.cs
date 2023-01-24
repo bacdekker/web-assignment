@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Reflection.Emit;
 
 namespace WebApplication2.Models
@@ -15,15 +16,24 @@ namespace WebApplication2.Models
 
         public Address()
         {
-            Street = "street";
-            City = "city";
-            ZipCode = "zipCode";
-            HouseNumber = 0;
+            Street = null;
+            City = null;
+            ZipCode = null;
+            HouseNumber = null;
         }
 
+        public bool Validate()
+        {
+            return true;
+        }
+
+        [AllowNull]
         public string Street { get; set; }
+        [AllowNull]
         public string City { get; set; }
+        [AllowNull]
         public string ZipCode { get; set; }
-        public int HouseNumber { get; set; }
+        [AllowNull]
+        public int? HouseNumber { get; set; }
     }
 }
