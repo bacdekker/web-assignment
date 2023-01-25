@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using WebApplication2.Models;
 using WebApplication2.Data;
-using RestSharp;
+//using RestSharp;
 
 
 namespace WebApplication2.Controllers
@@ -81,7 +81,7 @@ namespace WebApplication2.Controllers
             return Ok();
 
         }
-
+        /*
         [HttpGet("/addresses/distance")]
         public IActionResult getDistance(int id1, int id2)
         {
@@ -102,6 +102,6 @@ namespace WebApplication2.Controllers
             request.AddBody("addrs", request_body);
             IRestResponse response = client.Execute(request);
             return View();
-        }
+        }*/
     }
 }
