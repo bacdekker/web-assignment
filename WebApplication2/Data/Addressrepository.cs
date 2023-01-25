@@ -37,7 +37,7 @@ namespace WebApplication2.Data
         {
             string search_command_string = start;
             bool non_empty_search_command = false;
-            // In case the search command is not null loop through all non null properties and add them to the search
+            // Loop over all non null properties of the address and adds them to the search
             if (search_info != null)
             {
                 foreach (var prop in search_info.GetType().GetProperties())
@@ -100,6 +100,10 @@ namespace WebApplication2.Data
                             insert_command_string_part_two += ((int)prop.GetValue(address)).ToString() + ", ";
                         }
                     }
+                    else
+                    {
+                        throw new Exception("Value cannot be null");
+                    }
                 }
             }
             insert_command_string_part_one = insert_command_string_part_one.Substring(0, insert_command_string_part_one.Length - 2) + ") ";
@@ -110,7 +114,6 @@ namespace WebApplication2.Data
 
         public void UpdateAddress(Address address, int id)
         {
-            bool not_all_null = false;
             string update_command_string = "UPDATE ADDRESSES SET ";
             if (address != null)
             {
@@ -118,7 +121,6 @@ namespace WebApplication2.Data
                 {
                     if (prop.GetValue(address) != null)
                     {
-                        not_all_null = true;
                         if (prop.PropertyType.Name == "String")
                         {
                             update_command_string += prop.Name.ToString() + " = '" + prop.GetValue(address).ToString() + "'" + ", ";
@@ -128,13 +130,14 @@ namespace WebApplication2.Data
                             update_command_string += prop.Name.ToString() + " = " + ((int)prop.GetValue(address)).ToString() + ", ";
                         }
                     }
+                    else
+                    {
+                        throw new Exception("Value cannot be null");
+                    }
                 }
-                if (not_all_null) 
-                {
-                    update_command_string = update_command_string.Substring(0, update_command_string.Length - 2) + $" WHERE ID = {(int)id}";
-                    SqliteCommand update_command = new SqliteCommand(update_command_string, _db_connection);
-                    update_command.ExecuteNonQuery();
-                }
+                update_command_string = update_command_string.Substring(0, update_command_string.Length - 2) + $" WHERE ID = {(int)id}";
+                SqliteCommand update_command = new SqliteCommand(update_command_string, _db_connection);
+                update_command.ExecuteNonQuery();
             }
         }
 

@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[7.0.2, )"
             },
+            "RestSharpSigned": {
+              "target": "Package",
+              "version": "[105.2.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"

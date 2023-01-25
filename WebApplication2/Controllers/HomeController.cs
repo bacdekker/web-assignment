@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using WebApplication2.Models;
 using WebApplication2.Data;
+using RestSharp;
+
 
 namespace WebApplication2.Controllers
 {
@@ -78,6 +80,28 @@ namespace WebApplication2.Controllers
 
             return Ok();
 
+        }
+
+        [HttpGet("/addresses/distance")]
+        public IActionResult getDistance(int id1, int id2)
+        {
+            if(!_addressReposity.existAddress(id1) || !_addressReposity.existAddress(id2))
+                return BadRequest(ModelState);
+
+            Address address1 = _addressReposity.getSingleAddress(id1);
+            Address address2 = _addressReposity.getSingleAddress(id2);
+
+            string request_body = $@"{address1.Street} {address1.HouseNumber.ToString()} {address1.City}\n{address2.Street} {address2.HouseNumber.ToString()} {address2.City}";
+
+            var client = new RestClient("https://redline-redline-zipcode.p.rapidapi.com/rest/multi-radius.json/10/mile");
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("X-RapidAPI-Key", "fb5d635ac7mshd85c2c013e2c9cbp185f6cjsn754469ec0762");
+            request.AddHeader("X-RapidAPI-Host", "redline-redline-zipcode.p.rapidapi.com");
+            request.AddParameter("units", "km");
+            request.AddParameter("distance", 100);
+            request.AddBody("addrs", request_body);
+            IRestResponse response = client.Execute(request);
+            return View();
         }
     }
 }

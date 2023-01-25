@@ -28,11 +28,11 @@ namespace WebApplication2.Models
         }
 
         [AllowNull]
-        public string Street { get; set; }
+        public string? Street { get; set; }
         [AllowNull]
-        public string City { get; set; }
+        public string? City { get; set; }
         [AllowNull]
-        public string ZipCode { get; set; }
+        public string? ZipCode { get; set; }
         [AllowNull]
         public int? HouseNumber { get; set; }
     }
