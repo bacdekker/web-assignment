@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+WebApplication2/WebApplication2.csproj
+WebApplication2/obj/Debug/net6.0/WebApplication2.assets.cache
+WebApplication2/obj/project.assets.json
+WebApplication2/obj/project.nuget.cache
+.vs/web-assignment/v17/.suo
